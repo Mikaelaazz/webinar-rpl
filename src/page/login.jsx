@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import {Input} from "@heroui/input";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -35,11 +36,13 @@ export default function Login() {
               <label className="block font-poppins text-sm font-bold mb-2" htmlFor="nim">
                 NIM
               </label>
-              <input
-                className="w-full p-2 rounded bg-purple-200 focus:outline-purple-600 focus:outline-2" 
-                id="nim"
-                type="text"
+              <Input
+              className="w-full p-2 rounded bg-purple-200 focus:outline-purple-600 focus:outline-2" 
+              id="nim"
+              type="text"
+              placeholder='NIM'
               />
+
             </div>
             <div className="mb-4 md:mb-6 relative">
               <label className="block font-poppins text-sm font-bold mb-2" htmlFor="password">
