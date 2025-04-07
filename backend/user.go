@@ -22,7 +22,7 @@ type User struct {
     UserRole       UserRoleEnum `gorm:"column:user_role"`
     UserCreatedAt  time.Time    `gorm:"column:user_created_at;type:datetime"`
     UserPicture    string       `gorm:"column:user_picture"`
-    // Relationships - add these fields
+
     EventParticipants []EventParticipant `gorm:"foreignKey:UserId"`
     OTPs              []OTP              `gorm:"foreignKey:UserId"`
 }
