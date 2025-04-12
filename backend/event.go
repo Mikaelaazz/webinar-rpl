@@ -22,7 +22,7 @@ type Event struct {
     EventLink    string      `gorm:"column:event_link"`
     EventSpeaker string      `gorm:"column:event_speaker"`
     EventAtt     AttTypeEnum `gorm:"column:event_att"`
-    // Relationships - add these fields
+
     EventMaterials    []EventMaterial    `gorm:"foreignKey:EventId"`
     EventParticipants []EventParticipant `gorm:"foreignKey:EventId"`
     CertTemplates     []CertTemplate     `gorm:"foreignKey:EventId"`
