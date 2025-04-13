@@ -7,8 +7,8 @@ import (
 type UserEventRoleEnum string
 
 const (
-    Admin UserEventRoleEnum = "normal"
-    NUser UserEventRoleEnum = "committee"
+    NormalU    UserEventRoleEnum = "normal"
+    CommitteeU UserEventRoleEnum = "committee"
 )
 
 type EventParticipant struct {
