@@ -25,8 +25,7 @@ func local_create_server(dbFile string) *Backend {
         Expiration:     24 * time.Hour,
         CookieHTTPOnly: true,
         CookieSecure:   false,
-        CookiePath:     "/api",
-        CookieName:     "session_id",
+        CookiePath:     "/",
     })
 
     return &Backend{
