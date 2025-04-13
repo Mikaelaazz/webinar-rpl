@@ -5,6 +5,7 @@ go 1.24.1
 require (
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/gofiber/storage/sqlite3 v1.3.8
+	golang.org/x/crypto v0.14.0
 	gorm.io/driver/sqlite v1.5.7
 	gorm.io/gorm v1.25.12
 )

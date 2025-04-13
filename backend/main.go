@@ -19,8 +19,8 @@ func main() {
     l.Println("INFO: DB init task completed successfully.")
 
     // DO THE SERVER STUFF
-    app := local_create_server("./db/sessions.db")
-    local_make_route_handler(app)
+    app := appCreateNewServer("./db/sessions.db", db)
+    appMakeRouteHandler(app)
     if err := app.app.Listen(":3000"); err != nil {
         l.Fatal("ERR: Server failed to start: ", err)
     }

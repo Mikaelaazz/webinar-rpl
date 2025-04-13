@@ -6,17 +6,23 @@ test1()
 {
     curl -X POST \
         -H "Content-Type: application/json" \
-        -d '{"name": "commrade-goad"}' \
-        localhost:3000/api/set-session-name \
-        --cookie-jar cookies.txt
+        -d '{
+            "name": "Commrade Goad",
+            "pass": "secure-password123",
+            "email": "commrade@example.com",
+            "instance": "University XYZ",
+            "role": "user",
+            "picture": "https://example.com/avatar.jpg"
+        }' \
+            localhost:3000/api/register
     echo ""
 }
 
 test2()
 {
-    curl -X GET \
-        localhost:3000/api/get-session-name \
-        --cookie cookies.txt
+    # curl -X GET \
+    #     localhost:3000/api/get-session-name \
+    #     --cookie cookies.txt
     echo ""
 }
 
