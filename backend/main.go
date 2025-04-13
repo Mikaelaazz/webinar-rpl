@@ -2,8 +2,6 @@ package main
 
 import (
     l "log"
-    f "fmt"
-    "os"
 )
 
 func main() {
@@ -18,11 +16,11 @@ func main() {
         l.Fatal("ERR: Failed to mirgrate the db.")
         return
     }
-    f.Fprint(os.Stderr, "INFO: DB init task completed successfully.")
+    l.Println("INFO: DB init task completed successfully.")
 
     // DO THE SERVER STUFF
     app := local_create_server("./db/sessions.db")
-    local_make_handle(app)
+    local_make_route_handler(app)
     if err := app.app.Listen(":3000"); err != nil {
         l.Fatal("ERR: Server failed to start: ", err)
     }
