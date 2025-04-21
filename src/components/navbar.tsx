@@ -25,6 +25,13 @@ import {
 } from "@/components/icons";
 import { Logo } from "@/components/icons";
 
+import { siteConfig } from "@/config/site";
+import { ThemeSwitch } from "@/components/theme-switch";
+import { SearchIcon } from "@/components/icons";
+import { Logo } from "@/components/icons";
+
+// Navbar
+
 export const Navbar = () => {
   const searchInput = (
     <Input
@@ -49,6 +56,9 @@ export const Navbar = () => {
 
   return (
     <HeroUINavbar maxWidth="xl" position="sticky">
+      <NavbarContent className="flex sm:hidden basis-1 pl-4" justify="start">
+        <NavbarMenuToggle />
+      </NavbarContent>
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand className="gap-3 max-w-fit">
           <Link
@@ -61,6 +71,9 @@ export const Navbar = () => {
           </Link>
         </NavbarBrand>
         {/* <div className="hidden lg:flex gap-4 justify-start ml-2">
+
+        <div className="hidden sm:flex gap-4 justify-start ml-2">
+
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <Link
@@ -76,6 +89,7 @@ export const Navbar = () => {
             </NavbarItem>
           ))}
         </div> */}
+        </div>
       </NavbarContent>
 
       <NavbarContent
@@ -94,6 +108,8 @@ export const Navbar = () => {
         </Link>
         <ThemeSwitch />
         <NavbarMenuToggle />
+      <NavbarContent className="flex sm:hidden basis-1 pl-4" justify="end">
+        <ThemeSwitch />
       </NavbarContent>
 
       <NavbarMenu>
