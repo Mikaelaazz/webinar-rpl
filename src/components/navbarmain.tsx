@@ -4,6 +4,7 @@ import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon } from "@/components/icons";
 import { Logo } from "@/components/icons";
+import {User} from "@heroui/user";
 import {
   Navbar as HeroUINavbar,
   NavbarBrand,
@@ -20,6 +21,7 @@ export const NavbarMain = () => {
     <HeroUINavbar maxWidth="xl" position="sticky">
       <NavbarContent className="flex basis-1 pl-4" justify="start">
         <NavbarMenuToggle />
+        
       </NavbarContent>
       <NavbarContent className="basis-1/5 sm:basis-full" justify="center">
         <NavbarBrand className="gap-3 max-w-fit">
@@ -40,20 +42,45 @@ export const NavbarMain = () => {
       >
         <NavbarItem className="hidden md:flex gap-2">
           <ThemeSwitch />
+          <Link
+        href="/profil">
+        
+        <User 
+        avatarProps={{
+        src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+      }}
+      description=""
+      name="">
+
+        </User>
+        </Link>
         </NavbarItem>
       </NavbarContent>
 
       <NavbarContent className="md:hidden basis-1 pl-4" justify="end">
         <ThemeSwitch />
+        <Link
+        href="/profil">
+        
+        <User 
+        avatarProps={{
+        src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+      }}
+      description=""
+      name="">
+
+        </User>
+        </Link>
+        
       </NavbarContent>
 
       <NavbarMenu>
-        {/* <div className="mx-4 mt-2 flex flex-col gap-2">
+        <div className="flex flex-col gap-2 pl-28 py-2">
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link
                 color={
-                  index === 2
+                  index === 1
                     ? "primary"
                     : index === siteConfig.navMenuItems.length - 1
                       ? "danger"
@@ -66,7 +93,7 @@ export const NavbarMain = () => {
               </Link>
             </NavbarMenuItem>
           ))}
-        </div> */}
+        </div>
       </NavbarMenu>
     </HeroUINavbar>
   );
