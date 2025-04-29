@@ -6,8 +6,6 @@ import { useTheme } from "@heroui/use-theme";
 
 import { SunFilledIcon, MoonFilledIcon } from "@/components/icons";
 
-// Switch Light or Dark Theme
-
 export interface ThemeSwitchProps {
   className?: string;
   classNames?: SwitchProps["classNames"];
@@ -37,7 +35,6 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
     setIsMounted(true);
   }, [isMounted]);
 
-  // Prevent Hydration Mismatch
   if (!isMounted) return <div className="w-6 h-6" />;
 
   return (
