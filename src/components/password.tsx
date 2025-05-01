@@ -1,12 +1,15 @@
-import { Input } from "@heroui/input";
+import { Input, InputProps } from "@heroui/input";
 import { button as buttonStyles } from "@heroui/theme";
 import { Link } from "@heroui/link";
 import { section } from "framer-motion/client";
 import { SVGProps } from "react";
 import { JSX } from "react/jsx-runtime";
 import React from "react";
+import { InternalForwardRefRenderFunction } from "@heroui/system";
 
-export const EyeSlashFilledIcon = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => {
+export const EyeSlashFilledIcon = (
+  props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) => {
   return (
     <svg
       aria-hidden="true"
@@ -42,7 +45,9 @@ export const EyeSlashFilledIcon = (props: JSX.IntrinsicAttributes & React.SVGPro
   );
 };
 
-export const EyeFilledIcon = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => {
+export const EyeFilledIcon = (
+  props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>
+) => {
   return (
     <svg
       aria-hidden="true"
@@ -66,13 +71,15 @@ export const EyeFilledIcon = (props: JSX.IntrinsicAttributes & React.SVGProps<SV
   );
 };
 
-export default function Inputpassword() {
+export default function Inputpassword({ value, onClick }: InputProps) {
   const [isVisible, setIsVisible] = React.useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
     <Input
+      value={value}
+      onClick={onClick}
       endContent={
         <button
           aria-label="toggle password visibility"
@@ -94,4 +101,3 @@ export default function Inputpassword() {
     />
   );
 }
-
