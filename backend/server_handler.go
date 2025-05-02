@@ -29,7 +29,7 @@ func appHandleLogin(backend *Backend, route fiber.Router) {
         if len(body.UserEmail) <= 0 || len(body.UserPassword) <= 0 {
             return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
                 "success": false,
-                "message": fmt.Sprintf("Invalid email and password, %v", err),
+                "message": "Invalid email and password",
                 "data": nil,
             })
         }
