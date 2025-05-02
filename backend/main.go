@@ -23,11 +23,11 @@ func main() {
     // DO THE SERVER STUFF
     app := appCreateNewServer(db, "secret")
     app.app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5173",
-		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+        AllowOrigins: "*",
+        AllowHeaders: "Origin, Content-Type, Accept, Authorization",
         AllowMethods: "GET, POST, PUT, DELETE, OPTIONS",
         AllowCredentials: true,
-	}))
+    }))
     appMakeRouteHandler(app)
     if err := app.app.Listen(":3000"); err != nil {
         l.Fatal("ERR: Server failed to start: ", err)
