@@ -137,7 +137,7 @@ func appHandleRegister(backend *Backend, route fiber.Router) {
             })
         }
 
-        if len(body.Email) < 0 || len(body.Password) < 0 || len (body.FullName) < 0 {
+        if len(body.Email) <= 0 || len(body.Password) <= 0 || len (body.FullName) <= 0 {
             return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
                 "success": false,
                 "message": "Invalid data.",
