@@ -137,6 +137,14 @@ func appHandleRegister(backend *Backend, route fiber.Router) {
             })
         }
 
+        if len(body.Email) < 0 || len(body.Password) < 0 || len (body.FullName) < 0 {
+            return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+                "success": false,
+                "message": "Invalid data.",
+                "data": nil,
+            })
+        }
+
         var userData table.User
         res := backend.db.Where("user_email = ?", body.Email).First(&userData)
         if res.Error != nil {
@@ -155,17 +163,33 @@ func appHandleRegister(backend *Backend, route fiber.Router) {
             })
         }
 
+        hashedPassword, err := HashPassword(body.Password)
+        if err != nil {
+            return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+                "success": false,
+                "message": "Failed to hash the password.",
+                "data": nil,
+            })
+        }
+
         newUser := table.User {
             UserFullName: body.FullName,
             UserEmail: body.Email,
-            UserPassword: body.Password,
+            UserPassword: hashedPassword,
             UserPicture: body.Picture,
             UserInstance: body.Instance,
             UserRole: body.IsAdmin,
             UserCreatedAt: time.Now(),
         }
 
-        backend.db.Create(newUser)
+        result := backend.db.Create(newUser)
+        if result.Error != nil {
+            return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+                "success": false,
+                "message": fmt.Sprintf("Failed to write to db, %v", result.Error),
+                "data": nil,
+            })
+        }
 
         return c.Status(fiber.StatusOK).JSON(fiber.Map{
             "success": true,
