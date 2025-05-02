@@ -26,7 +26,7 @@ func main() {
         AllowOrigins: "*",
         AllowHeaders: "Origin, Content-Type, Accept, Authorization",
         AllowMethods: "GET, POST, PUT, DELETE, OPTIONS",
-        AllowCredentials: true,
+        AllowCredentials: false,
     }))
     appMakeRouteHandler(app)
     if err := app.app.Listen(":3000"); err != nil {

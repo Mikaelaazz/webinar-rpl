@@ -162,6 +162,7 @@ func appHandleRegister(backend *Backend, route fiber.Router) {
             UserPicture: body.Picture,
             UserInstance: body.Instance,
             UserRole: body.IsAdmin,
+            UserCreatedAt: time.Now(),
         }
 
         backend.db.Create(newUser)
