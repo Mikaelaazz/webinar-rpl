@@ -3,12 +3,13 @@ package main
 import (
     "fmt"
     "time"
-    "github.com/golang-jwt/jwt/v5"
-    "github.com/gofiber/fiber/v2"
     "webrpl/table"
+
+    "github.com/gofiber/fiber/v2"
+    "github.com/golang-jwt/jwt/v5"
 )
 
-
+// POST : api/login
 func appHandleLogin(backend *Backend, route fiber.Router) {
     route.Post("login", func (c *fiber.Ctx) error {
         var body struct {
@@ -80,6 +81,7 @@ func appHandleLogin(backend *Backend, route fiber.Router) {
 
 }
 
+// GET : api/user-info
 func appHandleUserInfo(backend *Backend, route fiber.Router) {
     route.Get("user-info", func (c *fiber.Ctx) error {
 
@@ -111,5 +113,63 @@ func appHandleUserInfo(backend *Backend, route fiber.Router) {
                 "data": nil,
             })
         }
+    })
+}
+
+// POST : api/register
+func appHandleRegister(backend *Backend, route fiber.Router) {
+    route.Post("register", func (c *fiber.Ctx) error {
+        var body struct {
+            Email string
+            FullName string
+            Password string
+            IsAdmin int
+            Instance string
+            Picture string
+        }
+
+        err:= c.BodyParser(&body)
+        if err != nil {
+            return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+                "success": false,
+                "message": fmt.Sprintf("Invalid request body, %v", err),
+                "data": nil,
+            })
+        }
+
+        var userData table.User
+        res := backend.db.Where("user_email = ?", body.Email).First(&userData)
+        if res.Error != nil {
+            return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+                "success": false,
+                "message": "Failed to fetch user data from db.",
+                "data": nil,
+            })
+        }
+
+        if res.RowsAffected > 0 {
+            return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+                "success": false,
+                "message": "User with that email already registered.",
+                "data": nil,
+            })
+        }
+
+        newUser := table.User {
+            UserFullName: body.FullName,
+            UserEmail: body.Email,
+            UserPassword: body.Password,
+            UserPicture: body.Picture,
+            UserInstance: body.Instance,
+            UserRole: body.IsAdmin,
+        }
+
+        backend.db.Create(newUser)
+
+        return c.Status(fiber.StatusOK).JSON(fiber.Map{
+            "success": true,
+            "message": "successfully created new user",
+            "data": nil,
+        })
     })
 }

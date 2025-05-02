@@ -33,6 +33,7 @@ func appMakeRouteHandler(backend *Backend) {
     }))
 
     appHandleLogin(backend, api)
+    appHandleRegister(backend, api)
 
     appHandleUserInfo(backend, protected)
 
