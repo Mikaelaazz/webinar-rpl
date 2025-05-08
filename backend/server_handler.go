@@ -159,7 +159,6 @@ func appHandleUserEdit(backend *Backend, route fiber.Router) {
                     "data": nil,
                 })
             }
-
             updates := make(map[string]interface{})
 
             if body.FullName != "" {
@@ -183,7 +182,6 @@ func appHandleUserEdit(backend *Backend, route fiber.Router) {
                     "data": nil,
                 })
             }
-
             return c.Status(fiber.StatusOK).JSON(fiber.Map{
                 "success": true,
                 "message": "Data Saved.",
