@@ -114,25 +114,20 @@ export const Navbar = () => {
             <p className="font-bold text-inherit">Webinar UKDC</p>
           </Link>
         </NavbarBrand>
+
+        {isLoggedIn && (
+          <NavbarItem className="hidden lg:flex">
+            <Link href="/dashboard" color="foreground">
+              Dashboard
+            </Link>
+          </NavbarItem>
+        )}
+
         <NavbarItem className="hidden lg:flex">
           <Link href="/about" color="foreground">
             About
           </Link>
         </NavbarItem>
-        {isLoggedIn && (
-          <>
-            <NavbarItem className="hidden lg:flex">
-              <Link href="/dashboard" color="foreground">
-                Dashboard
-              </Link>
-            </NavbarItem>
-            <NavbarItem className="hidden lg:flex">
-              <Link href="/about" color="foreground">
-                About
-              </Link>
-            </NavbarItem>
-          </>
-        )}
       </NavbarContent>
 
       <NavbarContent className="items-center gap-4" justify="end">
