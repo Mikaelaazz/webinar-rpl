@@ -1,13 +1,11 @@
 import { Link } from "@heroui/link";
-import { Input } from "@heroui/input";
 import { siteConfig } from "@/config/site";
-import { SearchIcon } from "@/components/icons";
 import { Logo } from "@/components/icons";
+import { Search } from "@/components/search";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { UserData } from "@/api/interface";
-import "react-toastify/dist/ReactToastify.css";
 import {
   Navbar as HeroUINavbar,
   NavbarBrand,
@@ -44,22 +42,6 @@ export const Navbar = () => {
       console.log("Unexpected Error");
     }
   }, []);
-
-  const searchInput = (
-    <Input
-      aria-label="Search"
-      classNames={{
-        inputWrapper: "bg-default-200",
-        input: "text-sm",
-      }}
-      labelPlacement="outside"
-      placeholder="Search..."
-      startContent={
-        <SearchIcon className="text-base text-default-500 pointer-events-none flex-shrink-0" />
-      }
-      type="search"
-    />
-  );
 
   const renderDropdownItems = () => {
     if (isLoggedIn) {
@@ -132,7 +114,9 @@ export const Navbar = () => {
 
       <NavbarContent className="items-center gap-4" justify="end">
         {isLoggedIn && (
-          <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+          <NavbarItem className="hidden lg:flex">
+            <Search />
+          </NavbarItem>
         )}
         <ThemeSwitch className="hidden lg:block" />
         <Dropdown placement="bottom-end">
@@ -154,7 +138,7 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarMenu>
-        {isLoggedIn && searchInput}
+        {isLoggedIn && <Search />}
         <div className="mx-4 mt-2 flex flex-col gap-2">
           <ThemeSwitch />
           {isLoggedIn ? (
