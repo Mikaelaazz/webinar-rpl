@@ -18,6 +18,7 @@ export default function ProfilPage() {
   const [createdAt, setCreatedAt] = useState("");
   const [isEdited, setIsEdited] = useState(false);
   const [error, setError] = useState("");
+  const [isTogglingEdit, setIsTogglingEdit] = useState(false);
 
   // Use useEffect so it doesnt aggresively refresh
   useEffect(() => {
@@ -31,7 +32,10 @@ export default function ProfilPage() {
         setName(user_data_object.UserFullName);
         setEmail(user_data_object.UserEmail);
         setInstance(user_data_object.UserInstance);
+
+        // Profile is still WIP
         setProfile(user_data_object.UserPicture);
+        // Maybe want to change password too in profile ?
 
         // Better Format Date
         const rawDate = user_data_object.UserCreatedAt.split("T")[0]; // Ambil "2025-05-07"
@@ -44,6 +48,20 @@ export default function ProfilPage() {
     }
   }, []);
 
+  const handleToggleEdit = (toState: boolean) => {
+    if (isTogglingEdit) {
+      toast.error("Please wait...");
+      return;
+    }
+
+    setIsTogglingEdit(true);
+    setIsEdited(toState);
+
+    setTimeout(() => {
+      setIsTogglingEdit(false);
+    }, 5);
+  };
+
   const handleSave = async () => {
     if (user_data) {
       const check_user_data = JSON.parse(user_data);
@@ -51,9 +69,9 @@ export default function ProfilPage() {
         name === check_user_data.UserFullName &&
         instance === check_user_data.UserInstance
       ) {
-        toast.error("Nothing Changed!");
+        toast.error("No changes to save.");
       } else {
-        toast.success("Profile Updated!");
+        toast.success("Profile updated successfully.");
       }
     }
 
@@ -126,6 +144,9 @@ export default function ProfilPage() {
 
           {/* Form Section - Will appear second on mobile */}
           <div className="order-2 lg:order-1 flex flex-wrap gap-4 w-full lg:w-[700px]">
+            <p className="text-blue-600 font-semibold text-sm invisible">
+              On Editing Mode
+            </p>
             <Input
               color="secondary"
               label="Name"
@@ -156,7 +177,7 @@ export default function ProfilPage() {
               value={instance}
               onChange={(e) => setInstance(e.target.value)}
             />
-            <div className="flex flex-row gap-2 pt-4 w-full">
+            <div className="flex justify-center lg:justify-start gap-2 pt-4 w-full">
               <button
                 className={buttonStyles({
                   color: "secondary",
@@ -164,7 +185,7 @@ export default function ProfilPage() {
                   variant: "solid",
                   size: "sm",
                 })}
-                onClick={() => setIsEdited(true)}
+                onClick={() => handleToggleEdit(true)}
               >
                 Edit
               </button>
@@ -232,6 +253,9 @@ export default function ProfilPage() {
             </div>
           </div>
           <div className="order-2 lg:order-1 flex flex-wrap gap-4 w-full lg:w-[700px]">
+            <p className="text-blue-600 font-semibold text-sm">
+              On Editing Mode
+            </p>
             {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
             <Input
               color="secondary"
@@ -261,7 +285,7 @@ export default function ProfilPage() {
               value={instance}
               onChange={(e) => setInstance(e.target.value)}
             />
-            <div className="flex flex-row gap-2 pt-4 w-full">
+            <div className="flex justify-center lg:justify-start gap-2 pt-4 w-full">
               <button
                 className={buttonStyles({
                   color: "secondary",
@@ -269,7 +293,7 @@ export default function ProfilPage() {
                   variant: "solid",
                   size: "sm",
                 })}
-                onClick={() => setIsEdited(false)}
+                onClick={() => handleToggleEdit(false)}
               >
                 Cancel
               </button>
