@@ -137,6 +137,37 @@ func appHandleUserInfoOf(backend *Backend, route fiber.Router) {
     })
 }
 
+//// -=- TODO -=- ////
+// POST: api/protected/user-edit-admin
+func appHandleUserEditAdmin(backend *Backend, route fiber.Router){}
+
+// POST: api/protected/user-del-admin
+func appHandleUserDelAdmin(_ *Backend, route fiber.Router){
+    route.Post("/user-del-admin", func (c *fiber.Ctx) error{
+        var body struct {
+            UserId int `json:"user_id"`
+        }
+
+        err := c.BodyParser(&body)
+        if err != nil {
+            return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+                "success": false,
+                "message": fmt.Sprintf("Bad request body, %v", err),
+                "error_code": 1,
+                "data": nil,
+            })
+        }
+
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+            "success": false,
+            "message": "WIP",
+            "error_code": 0,
+            "data": nil,
+        })
+    })
+}
+//// -=- TODO -=- ////
+
 // POST: api/protected/user-edit
 func appHandleUserEdit(backend *Backend, route fiber.Router) {
     route.Post("/user-edit", func (c *fiber.Ctx) error {
@@ -144,6 +175,7 @@ func appHandleUserEdit(backend *Backend, route fiber.Router) {
             FullName string `json:"name"`
             Instance string `json:"instance"`
             Picture  string `json:"picture"`
+            Password *string `json:"password"`
         }
 
         user := c.Locals("user").(*jwt.Token)
@@ -159,7 +191,9 @@ func appHandleUserEdit(backend *Backend, route fiber.Router) {
                     "data": nil,
                 })
             }
-            updates := make(map[string]interface{})
+
+            updates := make(map[string]any)
+            // updates := make(map[string]interface{})
 
             if body.FullName != "" {
                 updates["user_full_name"] = body.FullName
@@ -171,6 +205,19 @@ func appHandleUserEdit(backend *Backend, route fiber.Router) {
 
             if body.Picture != "" {
                 updates["user_picture"] = body.Picture
+            }
+
+            if body.Password != nil || *body.Password == "" {
+                hashedPassword, err := HashPassword(*body.Password)
+                if err != nil {
+                    return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+                        "success": false,
+                        "message": "Failed to hash the password.",
+                        "error_code": 5,
+                        "data": nil,
+                    })
+                }
+                updates["password"] = hashedPassword
             }
 
             result := backend.db.Model(&table.User{}).Where("user_email = ?", email).Updates(updates)
@@ -439,19 +486,14 @@ func appHandleNewEvent(backend *Backend, route fiber.Router) {
             })
         }
 
-        // Double Check :)
-        // TODO: Check if that id didnt exist.
-        // nangkepku kalau dia gaada id (ga dapat) -> brarti query nya 0
-        // Kalau lebih berarti dapet
-
-        if res.RowsAffected == 0 {
+        if res.RowsAffected <= 0 {
             return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
                 "success": false,
                 "message": "Certificate template with that id does not exist",
                 "error_code": 5,
                 "data": nil,
             })
-        } 
+        }
 
         var NewCertTemplate []table.CertTemplate
         NewCertTemplate = append(NewCertTemplate, _NewCertTemplate)
@@ -468,11 +510,6 @@ func appHandleNewEvent(backend *Backend, route fiber.Router) {
             })
         }
 
-        // Double Check :)
-        // TODO: Check if that id didnt exist.
-        // nangkepku kalau dia gaada id (ga dapat) -> brarti query nya 0
-        // Kalau lebih berarti dapet
-
         if res.RowsAffected == 0 {
             return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
                 "success": false,
@@ -481,8 +518,7 @@ func appHandleNewEvent(backend *Backend, route fiber.Router) {
                 "data": nil,
             })
         }
-        
-        // Double Check :)
+
         var NewEventMat []table.EventMaterial
         NewEventMat = append(NewEventMat, _NewEventMat)
 
@@ -506,7 +542,6 @@ func appHandleNewEvent(backend *Backend, route fiber.Router) {
             })
         }
 
-        // Double Check :)
         res = backend.db.Where("event_name = ? ", body.Name).First(&Event)
         if res.Error != nil {
             return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -525,9 +560,7 @@ func appHandleNewEvent(backend *Backend, route fiber.Router) {
                 "data": nil,
             })
         }
-        
-        // TODO: finish binding this.
-        // Bukannya ini udah yo?
+
         newEvent := table.Event {
             EventDesc: body.Desc,
             EventName: body.Name,

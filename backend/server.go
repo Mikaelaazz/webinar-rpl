@@ -39,6 +39,8 @@ func appMakeRouteHandler(backend *Backend) {
     appHandleUserInfoAll(backend, protected)
     appHandleUserInfoOf(backend, protected)
     appHandleUserEdit(backend, protected)
+    appHandleUserEditAdmin(backend, protected)
+    appHandleUserDelAdmin(backend, protected)
 
     appHandleNewEvent(backend, protected)
 
