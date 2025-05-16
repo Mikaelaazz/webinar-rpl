@@ -140,12 +140,23 @@ func appHandleUserInfoOf(backend *Backend, route fiber.Router) {
 //// -=- TODO -=- ////
 // POST: api/protected/user-edit-admin
 func appHandleUserEditAdmin(backend *Backend, route fiber.Router){}
+//// -=- TODO -=- ////
 
 // POST: api/protected/user-del-admin
-func appHandleUserDelAdmin(_ *Backend, route fiber.Router){
+func appHandleUserDelAdmin(backend *Backend, route fiber.Router){
     route.Post("/user-del-admin", func (c *fiber.Ctx) error{
         var body struct {
             UserId int `json:"user_id"`
+        }
+
+        user := c.Locals("user").(*jwt.Token)
+        if user == nil {
+            return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+                "success": false,
+                "message": "Failed to claim JWT Token.",
+                "error_code": 1,
+                "data": nil,
+            })
         }
 
         err := c.BodyParser(&body)
@@ -153,20 +164,41 @@ func appHandleUserDelAdmin(_ *Backend, route fiber.Router){
             return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
                 "success": false,
                 "message": fmt.Sprintf("Bad request body, %v", err),
-                "error_code": 1,
+                "error_code": 2,
                 "data": nil,
             })
         }
 
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-            "success": false,
-            "message": "WIP",
+        claims := user.Claims.(jwt.MapClaims)
+        admin := claims["admin"].(int)
+
+        if admin != 1 {
+            return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+                "success": false,
+                "message": "Invalid credentials to acces this api.",
+                "error_code": 3,
+                "data": nil,
+            })
+        }
+
+        res := backend.db.Delete(&table.User{}, body.UserId)
+        if res.Error != nil {
+            return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+                "success": false,
+                "message": "Failed to delete user from the DB.",
+                "error_code": 5,
+                "data": nil,
+            })
+        }
+
+        return c.Status(fiber.StatusOK).JSON(fiber.Map{
+            "success": true,
+            "message": "User deleted.",
             "error_code": 0,
             "data": nil,
         })
     })
 }
-//// -=- TODO -=- ////
 
 // POST: api/protected/user-edit
 func appHandleUserEdit(backend *Backend, route fiber.Router) {
@@ -461,6 +493,8 @@ func appHandleNewEvent(backend *Backend, route fiber.Router) {
             Link          string    `json:"link"`
             Speaker       string    `json:"speaker"`
             Att           string    `json:"att"`
+            Img           string    `json:"img"`
+            Max           int       `json:"max"`
             FMaterial     []int     `json:"material_id"`
             FCertTemplate int       `json:"cert_temp_id"`
         }
@@ -568,6 +602,8 @@ func appHandleNewEvent(backend *Backend, route fiber.Router) {
             EventDEnd: body.DEnd,
             EventSpeaker: body.Speaker,
             EventAtt: table.AttTypeEnum(body.Att),
+            EventImg: body.Img,
+            EventMax: body.Max,
             EventMaterials: NewEventMat,
             CertTemplates: NewCertTemplate,
         }
