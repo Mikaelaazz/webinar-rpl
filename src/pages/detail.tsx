@@ -49,6 +49,17 @@ export default function DetailPage() {
               })}
               href="#"
             >
+              Daftar
+            </Link>
+            <Link
+              className={buttonStyles({
+                color: "secondary",
+                radius: "full",
+                variant: "bordered",
+                size: "lg",
+              })}
+              href="#"
+            >
               Absensi
             </Link>
             <Link
