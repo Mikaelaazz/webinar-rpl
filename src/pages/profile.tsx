@@ -23,19 +23,15 @@ export default function ProfilPage() {
   // Use useEffect so it doesnt aggresively refresh
   useEffect(() => {
     try {
-      // Check kalau dapet data (biar ga null)
       if (user_data) {
-        // Fetch (parse) data from json
         const user_data_object: UserData = JSON.parse(user_data);
 
-        // Set value to useState
         setName(user_data_object.UserFullName);
         setEmail(user_data_object.UserEmail);
         setInstance(user_data_object.UserInstance);
 
-        // Profile is still WIP
+        // Profile is still WIP passsword too
         setProfile(user_data_object.UserPicture);
-        // Maybe want to change password too in profile ?
 
         // Better Format Date
         const rawDate = user_data_object.UserCreatedAt.split("T")[0]; // Ambil "2025-05-07"
@@ -48,6 +44,33 @@ export default function ProfilPage() {
     }
   }, []);
 
+  // Handle Not Edited Mode
+  const handleNotEditedMode = (event: any) => {
+    if (!isEdited) {
+      event.preventDefault();
+      toast.info(
+        "Please enter edit mode first to change your profile picture."
+      );
+    }
+  };
+
+  // Handle Image Change
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        setProfile(result);
+        toast.success("Image changed!");
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Handle Edit Mode
   const handleToggleEdit = (toState: boolean) => {
     if (isTogglingEdit) {
       toast.info("Please wait...");
@@ -62,6 +85,7 @@ export default function ProfilPage() {
     }, 5);
   };
 
+  // Handle Save
   const handleSave = async () => {
     if (user_data) {
       const check_user_data = JSON.parse(user_data);
@@ -106,19 +130,24 @@ export default function ProfilPage() {
               <Image
                 className="rounded-full object-cover pointer-events-none"
                 alt="Profil User"
-                src="https://heroui.com/images/hero-card-complete.jpeg"
-                width={153}
-                height={153}
+                src={profile}
+                fallbackSrc="/logo_if.png"
+                width={200}
+                height={200}
               />
-              <Button
-                isIconOnly
-                className="absolute -bottom-1 -right-[0px] z-10 bg-secondary-500 text-white rounded-full"
-                aria-label="Edit Photo"
+              <label
+                className="absolute -bottom-1 -right-[0px] z-10 bg-secondary-500 text-white rounded-full p-2 cursor-pointer"
+                onClick={handleNotEditedMode}
               >
                 <FaCamera className="w-5 h-5" />
-              </Button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
             </div>
-
             <Button
               className={buttonStyles({
                 color: "secondary",
@@ -126,10 +155,10 @@ export default function ProfilPage() {
                 variant: "solid",
                 size: "sm",
               })}
+              onClick={handleNotEditedMode}
             >
               Remove
             </Button>
-
             <div className="w-full">
               <Input
                 color="secondary"
@@ -230,18 +259,22 @@ export default function ProfilPage() {
               <Image
                 className="rounded-full object-cover pointer-events-none"
                 alt="Profil User"
-                src="https://heroui.com/images/hero-card-complete.jpeg"
-                width={153}
-                height={153}
+                src={profile}
+                fallbackSrc="/logo_if.png"
+                width={200}
+                height={200}
               />
-              <Button
-                isIconOnly
-                className="absolute -bottom-1 -right-[0px] z-10 bg-secondary-500 text-white rounded-full"
-                aria-label="Edit Photo"
-              >
+              <label className="absolute -bottom-1 -right-[0px] z-10 bg-secondary-500 text-white rounded-full p-2 cursor-pointer">
                 <FaCamera className="w-5 h-5" />
-              </Button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
             </div>
+
             <Button
               className={buttonStyles({
                 color: "secondary",
@@ -250,6 +283,10 @@ export default function ProfilPage() {
                 size: "sm",
               })}
               href="/"
+              onClick={() => {
+                setProfile("");
+                // Do something with the profile image to affect the backend
+              }}
             >
               Remove
             </Button>
