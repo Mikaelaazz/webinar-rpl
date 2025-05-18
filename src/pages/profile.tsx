@@ -50,7 +50,7 @@ export default function ProfilPage() {
 
   const handleToggleEdit = (toState: boolean) => {
     if (isTogglingEdit) {
-      toast.error("Please wait...");
+      toast.info("Please wait...");
       return;
     }
 
@@ -69,7 +69,7 @@ export default function ProfilPage() {
         name === check_user_data.UserFullName &&
         instance === check_user_data.UserInstance
       ) {
-        toast.error("No changes to save.");
+        toast.info("No changes to save.");
       } else {
         toast.success("Profile updated successfully.");
       }
@@ -200,6 +200,17 @@ export default function ProfilPage() {
               >
                 Save
               </button>
+              <button
+                className={buttonStyles({
+                  color: "secondary",
+                  radius: "full",
+                  variant: "bordered",
+                  size: "sm",
+                })}
+                disabled
+              >
+                Change Password
+              </button>
             </div>
           </div>
           {/* Toast Container */}
@@ -307,6 +318,16 @@ export default function ProfilPage() {
                 onClick={handleSave}
               >
                 Save
+              </button>
+              <button
+                className={buttonStyles({
+                  color: "secondary",
+                  radius: "full",
+                  variant: "solid",
+                  size: "sm",
+                })}
+              >
+                Change Password
               </button>
             </div>
           </div>
