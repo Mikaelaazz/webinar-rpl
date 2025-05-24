@@ -107,7 +107,7 @@ func appHandleUserInfoOf(backend *Backend, route fiber.Router) {
         user := c.Locals("user").(*jwt.Token)
         if user != nil {
             claims := user.Claims.(jwt.MapClaims)
-            admin := claims["admin"].(int)
+            admin := claims["admin"].(float64)
 
             if admin != 1 {
                 return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -152,7 +152,14 @@ func appHandleUserInfoOf(backend *Backend, route fiber.Router) {
 //// -=- TODO -=- ////
 // POST: api/protected/user-edit-admin
 func appHandleUserEditAdmin(backend *Backend, route fiber.Router){
-
+    route.Post("/user-edit-admin", func (c *fiber.Ctx) error {
+        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+            "success": false,
+            "message": "Invalid Body Request",
+            "error_code": 1,
+            "data": nil,
+        })
+    })
 }
 //// -=- TODO -=- ////
 
@@ -184,7 +191,7 @@ func appHandleUserDelAdmin(backend *Backend, route fiber.Router){
         }
 
         claims := user.Claims.(jwt.MapClaims)
-        admin := claims["admin"].(int)
+        admin := claims["admin"].(float64)
 
         if admin != 1 {
             return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -307,7 +314,7 @@ func appHandleUserInfoAll(backend *Backend, route fiber.Router) {
         user := c.Locals("user").(*jwt.Token)
         if user != nil {
             claims := user.Claims.(jwt.MapClaims)
-            admin := claims["admin"].(int)
+            admin := claims["admin"].(float64)
 
             if admin != 1 {
                 return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -602,7 +609,7 @@ func appHandleUserCount(backend *Backend, route fiber.Router) {
             })
         }
         claims := user.Claims.(jwt.MapClaims)
-        admin := claims["admin"].(int)
+        admin := claims["admin"].(float64)
 
         if admin != 1 {
             return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -644,7 +651,7 @@ func appHandleRegisterAdmin(backend *Backend, route fiber.Router) {
             })
         }
         claims := user.Claims.(jwt.MapClaims)
-        admin := claims["admin"].(int)
+        admin := claims["admin"].(float64)
 
         if admin != 1 {
             return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{

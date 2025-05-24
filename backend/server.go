@@ -47,8 +47,6 @@ func appMakeRouteHandler(backend *Backend) {
     appHandleUserCount(backend, protected)
     appHandleRegisterAdmin(backend, protected)
 
-    // TODO: total webinar sama total user
-
     appHandleNewEvent(backend, protected)
 
     app.Get("/", func(c *fiber.Ctx) error {
