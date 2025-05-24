@@ -630,3 +630,121 @@ func appHandleUserCount(backend *Backend, route fiber.Router) {
         })
     })
 }
+
+// POST : api/protected/register
+func appHandleRegisterAdmin(backend *Backend, route fiber.Router) {
+    route.Post("register", func (c *fiber.Ctx) error {
+        user := c.Locals("user").(*jwt.Token)
+        if user == nil {
+            return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+                "success": false,
+                "message": "Failed to claim JWT Token.",
+                "error_code": 1,
+                "data": nil,
+            })
+        }
+        claims := user.Claims.(jwt.MapClaims)
+        admin := claims["admin"].(int)
+
+        if admin != 1 {
+            return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+                "success": false,
+                "message": "Invalid credentials to acces this api.",
+                "error_code": 2,
+                "data": nil,
+            })
+        }
+        var body struct {
+            Email    string `json:"email"`
+            FullName string `json:"name"`
+            Password string `json:"pass"`
+            Instance string `json:"instance"`
+            Picture  string `json:"picture"`
+        }
+
+        err:= c.BodyParser(&body)
+        if err != nil {
+            return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+                "success": false,
+                "message": fmt.Sprintf("Invalid request body, %v", err),
+                "error_code": 3,
+                "data": nil,
+            })
+        }
+
+        if len(body.Email) <= 0 || len(body.Password) <= 0 || len(body.FullName) <= 0 {
+            return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+                "success": false,
+                "message": "Invalid data.",
+                "error_code": 4,
+                "data": nil,
+            })
+        }
+
+        if !isEmailValid(body.Email) {
+            return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+                "success": false,
+                "message": "Invalid email format.",
+                "error_code": 5,
+                "data": nil,
+            })
+        }
+
+        var userData table.User
+        res := backend.db.Where("user_email = ?", body.Email).First(&userData)
+        if res.Error != nil && res.Error != gorm.ErrRecordNotFound {
+            return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+                "success": false,
+                "message": "Failed to fetch user data from db.",
+                "error_code": 6,
+                "data": nil,
+            })
+        }
+
+        if res.RowsAffected > 0 {
+            return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+                "success": false,
+                "message": "User with that email already registered.",
+                "error_code": 7,
+                "data": nil,
+            })
+        }
+
+        hashedPassword, err := HashPassword(body.Password)
+        if err != nil {
+            return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+                "success": false,
+                "message": "Failed to hash the password.",
+                "error_code": 8,
+                "data": nil,
+            })
+        }
+
+        newUser := table.User {
+            UserFullName: body.FullName,
+            UserEmail: body.Email,
+            UserPassword: hashedPassword,
+            UserPicture: body.Picture,
+            UserInstance: body.Instance,
+            UserRole: 1,
+            UserCreatedAt: time.Now(),
+        }
+
+        result := backend.db.Create(&newUser)
+        if result.Error != nil {
+            return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+                "success": false,
+                "message": fmt.Sprintf("Failed to write to db, %v", result.Error),
+                "error_code": 9,
+                "data": nil,
+            })
+        }
+
+        return c.Status(fiber.StatusOK).JSON(fiber.Map{
+            "success": true,
+            "message": "successfully created new user",
+            "error_code": 0,
+            "data": nil,
+        })
+    })
+}

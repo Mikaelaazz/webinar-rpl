@@ -3,5 +3,6 @@ export to csv all the webinar data
 
 
 TODO:
-- Regex
 - Aksually make JWT expired
+- Edit admin
+- There is always admin 0
