@@ -588,7 +588,7 @@ func appHandleRegister(backend *Backend, route fiber.Router) {
     })
 }
 
-// GET : /api/user-count
+// GET : api/protected/user-count
 func appHandleUserCount(backend *Backend, route fiber.Router) {
     route.Get("/user-count", func (c *fiber.Ctx) error {
 
@@ -631,9 +631,9 @@ func appHandleUserCount(backend *Backend, route fiber.Router) {
     })
 }
 
-// POST : api/protected/register
+// POST : api/protected/register-admin
 func appHandleRegisterAdmin(backend *Backend, route fiber.Router) {
-    route.Post("register", func (c *fiber.Ctx) error {
+    route.Post("register-admin", func (c *fiber.Ctx) error {
         user := c.Locals("user").(*jwt.Token)
         if user == nil {
             return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
