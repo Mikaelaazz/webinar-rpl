@@ -288,6 +288,8 @@ export default function CreateWebinar() {
                   <Input
                     color="secondary"
                     label="Max Attendees"
+                    min={1}
+                    max={500}
                     type="number"
                     variant="flat"
                     value={
